@@ -57,16 +57,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserEntity getUser(String username) {
+    public Long getUserId(String username) {
         if (doesUserExist(username)) {
-            return mUserRepository.findByUsername(username).get();
+            return mUserRepository.findByUsername(username).get().getId();
         }
         throw new UsernameNotFoundException("User was not found in the database");
     }
 
     @Override
     public void changeRole(String username) {
-        UserEntity userEntity = getUser(username);
+        UserEntity userEntity = mUserRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User was not found in the database"));
         userEntity.setAdmin(!userEntity.getAdmin());
     }
 
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity userEntity = getUser(username);
+        UserEntity userEntity = mUserRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User was not found in the database"));
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         return new User(username, userEntity.getPassword(), authorities);
     }
