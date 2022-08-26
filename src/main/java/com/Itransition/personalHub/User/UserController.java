@@ -23,15 +23,10 @@ public class UserController {
     @Autowired
     private UserServiceImpl mUserService;
 
-    @GetMapping("/user")
-    public String test() {
-        return "dziala";
-    }
-
-
     @GetMapping("/user/{username}")
-    public ResponseEntity<UserEntity> getUser(@RequestParam String username) {
-        return ResponseEntity.ok().body(mUserService.getUser(username));
+    public ResponseEntity<Long> getUserId(@PathVariable String username) {
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/{username}").toUriString());
+        return ResponseEntity.ok(mUserService.getUserId(username));
     }
 
     @PostMapping("/user/save")
@@ -41,19 +36,19 @@ public class UserController {
     }
 
     @PutMapping("/user/update/{username}")
-    public ResponseEntity<UserEntity> updateUser(@RequestBody UserEntity userEntity, @RequestParam String username) {
+    public ResponseEntity<UserEntity> updateUser(@RequestBody UserEntity userEntity, @PathVariable String username) {
         mUserService.updateUser(userEntity, username);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/user/{username}")
-    public ResponseEntity<UserEntity> deleteUser(@RequestParam String username) {
+    public ResponseEntity<UserEntity> deleteUser(@PathVariable String username) {
         mUserService.deleteUser(username);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/user/status/{username}")
-    public ResponseEntity<?> changeRole(@RequestParam String username) {
+    public ResponseEntity<?> changeRole(@PathVariable String username) {
         mUserService.changeRole(username);
         return ResponseEntity.ok().build();
     }

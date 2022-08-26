@@ -7,8 +7,8 @@ public interface UserService {
     boolean saveUser (UserEntity userEntity);
     void deleteUser (String username);
     void updateUser (UserEntity userEntity, String username);
-    UserEntity getUser (String username);
+    Long getUserId (String username);
     void changeRole (String username);
 
-    void refreshToken(HttpServletRequest request, HttpServletResponse response);
+    void refreshToken (HttpServletRequest request, HttpServletResponse response);
 }
