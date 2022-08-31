@@ -74,7 +74,7 @@ public class CollectionServiceImpl implements CollectionService{
     }
 
     @Override
-    public void updateLikes(Long id) {
+    public void updateLikes(Long id, int amount) {
         if (doesCollectionExist(id)) mCollectionRepository.updateLikes(id);
         else throw new CollectionNotFoundException(id);
     }

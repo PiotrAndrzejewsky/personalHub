@@ -16,6 +16,6 @@ public class CollectionPropertiesController {
 
     @GetMapping("/collection/properties/{id}")
     public CollectionPropertiesEntity getCollectionProperties(@PathVariable Long id) {
-        return mCollectionPropertiesServiceImpl.getCollectionProperties(id);
+        return mCollectionPropertiesServiceImpl.getCollectionPropertiesByCollectionId(id);
     }
 }

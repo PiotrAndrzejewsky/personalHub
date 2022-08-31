@@ -32,8 +32,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         User user = (User) authResult.getPrincipal();
         String access_token = createToken(user.getUsername(), EXPIRATION_DATE, request.getRequestURL().toString());
         String refresh_token = createToken(user.getUsername(), EXPIRATION_DATE * 5, request.getRequestURL().toString());
-        response.setHeader("access_token", access_token);
-        response.setHeader("refresh_token", refresh_token);
+        response.setHeader("Access-Token", access_token);
+        response.setHeader("Refresh-Token", refresh_token);
     }
 
     @Override

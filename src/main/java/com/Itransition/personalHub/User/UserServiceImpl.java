@@ -80,8 +80,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             String username = decodedJWT.getSubject();
             String accessToken = createToken(username, EXPIRATION_DATE, request.getRequestURL().toString());
             String refreshToken = createToken(username, EXPIRATION_DATE * 5, request.getRequestURL().toString());
-            response.setHeader("access_token", accessToken);
-            response.setHeader("refresh_token", refreshToken);
+            response.setHeader("Access-Token", accessToken);
+            response.setHeader("Refresh-Token", refreshToken);
         }
         else {
             throw new RuntimeException("refresh token is missing");

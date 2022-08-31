@@ -8,7 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface CollectionPropertiesRepository extends CrudRepository<CollectionPropertiesEntity, Long> {
-
     @Query(value = "SELECT * FROM collection_properties WHERE collection_id = :id", nativeQuery = true)
     Optional<CollectionPropertiesEntity> findByCollectionId(Long id);
 }
