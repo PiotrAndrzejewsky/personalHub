@@ -52,8 +52,8 @@ public class CollectionController {
     }
 
     @PostMapping("/collection/likes/update/{id}")
-    public void updateLikes(@PathVariable Long id) {
-        mCollectionService.updateLikes(id);
+    public void updateLikes(@RequestBody int amount, @PathVariable Long id) {
+        mCollectionService.updateLikes(id, amount);
     }
 
     @PutMapping("/collection/update/{id}")

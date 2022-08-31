@@ -18,7 +18,7 @@ public interface CollectionRepository extends CrudRepository<CollectionEntity, L
     void saveNewTopic(String name);
 
     @Modifying
-    @Query(value = "UPDATE collections SET likes = likes + 1 WHERE id = :id", nativeQuery = true)
+    @Query(value = "UPDATE collections SET likes = likes + :amount WHERE id = :id", nativeQuery = true)
     void updateLikes(Long id);
 
     @Query(value = "SELECT name FROM collection_topics WHERE id = :id", nativeQuery = true)

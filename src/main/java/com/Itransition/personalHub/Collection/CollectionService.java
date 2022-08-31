@@ -3,7 +3,6 @@ package com.Itransition.personalHub.Collection;
 import java.util.List;
 
 public interface CollectionService {
-
     boolean createCollection(CollectionEntity collectionEntity);
     void deleteCollection(Long id);
     CollectionEntity getCollection(Long id);
@@ -13,6 +12,6 @@ public interface CollectionService {
 
     String getTopicByTopicId(Long id);
     List<String> getAllTopics();
-    void updateLikes(Long id);
+    void updateLikes(Long id, int amount);
     int getLikes(Long id);
 }
