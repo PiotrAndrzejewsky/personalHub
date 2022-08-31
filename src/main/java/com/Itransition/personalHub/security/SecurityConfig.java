@@ -26,6 +26,8 @@ public class SecurityConfig {
         customAuthenticationFilter.setFilterProcessesUrl("/user/login");
         http
                 .csrf().disable()
+                .cors()
+                .and()
                 .authorizeRequests().antMatchers(POST,"/user/login").permitAll()
                 .and()
                 .authorizeRequests().antMatchers(POST,"/user/save").permitAll()
