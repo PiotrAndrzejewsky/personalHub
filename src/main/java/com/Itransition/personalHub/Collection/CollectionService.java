@@ -8,10 +8,10 @@ public interface CollectionService {
     CollectionEntity getCollection(Long id);
     List<CollectionEntity> getAllCollectionsById(Long userId);
     void updateCollection(CollectionEntity collectionEntity, Long id);
-    boolean createNewTopic(String name);
+    boolean createNewTopic(TopicEntity topic);
 
-    String getTopicByTopicId(Long id);
-    List<String> getAllTopics();
-    void updateLikes(Long id, int amount);
+    TopicEntity getTopicByTopicId(Long id);
+    List<TopicEntity> getAllTopics();
+    void updateLikes(Long collectionId, Long userId);
     int getLikes(Long id);
 }
