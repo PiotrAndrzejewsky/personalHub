@@ -10,22 +10,9 @@ import java.util.List;
 
 @Repository
 public interface CollectionRepository extends CrudRepository<CollectionEntity, Long> {
-    @Query(value = "SELECT * FROM collection_topics WHERE name = :name", nativeQuery = true)
-    Optional<Boolean> findTopicByName(String name);
-
-    @Modifying
-    @Query(value = "INSERT INTO collection_topics (name) VALUES (:name)", nativeQuery = true)
-    void saveNewTopic(String name);
-
     @Modifying
     @Query(value = "UPDATE collections SET likes = likes + :amount WHERE id = :id", nativeQuery = true)
     void updateLikes(Long id);
-
-    @Query(value = "SELECT name FROM collection_topics WHERE id = :id", nativeQuery = true)
-    Optional<String> findTopicById(Long id);
-
-    @Query(value = "SELECT name FROM collection_topics", nativeQuery = true)
-    List<String> getAllTopic();
 
     @Query(value = "SELECT * FROM collections WHERE user_id = :id", nativeQuery = true)
     List<CollectionEntity> getAllCollectionsById(Long id);
@@ -33,4 +20,22 @@ public interface CollectionRepository extends CrudRepository<CollectionEntity, L
     @Modifying
     @Query(value = "DELETE FROM collection_properties WHERE collection_id = :id", nativeQuery = true)
     void deletePropertiesById(Long id);
+
+    @Query(value = "SELECT COUNT(id) FROM collection_likes WHERE collection_id = :id", nativeQuery = true)
+    int getLikes(Long id);
+
+    @Query(value = "SELECT COUNT(id) FROM collection_likes WHERE collection_id = :collectionId AND user_id = :userId", nativeQuery = true)
+    int getLikesByCollectionAndUserId(Long collectionId, Long userId);
+
+    @Modifying
+    @Query(value = "INSERT INTO collection_likes (collection_id, user_id) VALUES (:collectionId, :userId)", nativeQuery = true)
+    void addNewLike(Long collectionId, Long userId);
+
+    @Modifying
+    @Query(value = "DELETE FROM collection_likes WHERE collection_id = :collectionId AND user_id = :userId", nativeQuery = true)
+    void deleteLike(Long collectionId, Long userId);
+
+    @Modifying
+    @Query(value = "DELETE FROM collection_likes WHERE collection_id = :collectionId", nativeQuery = true)
+    void deleteAllCollectionLikes(Long collectionId);
 }

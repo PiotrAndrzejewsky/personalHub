@@ -3,6 +3,9 @@ package com.Itransition.personalHub.Collection;
 import com.Itransition.personalHub.Exceptions.CollectionNotFoundException;
 import com.Itransition.personalHub.Exceptions.TopicAlreadyExistsException;
 import com.Itransition.personalHub.Exceptions.TopicNotFoundException;
+import com.Itransition.personalHub.Item.CommentRepository;
+import com.Itransition.personalHub.Item.ItemEntity;
+import com.Itransition.personalHub.Item.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,15 @@ public class CollectionServiceImpl implements CollectionService{
     @Autowired
     private CollectionRepository mCollectionRepository;
 
+    @Autowired
+    private ItemRepository mItemRepository;
+
+    @Autowired
+    private CommentRepository mCommentRepository;
+
+    @Autowired
+    private TopicRepository mTopicRepository;
+
     @Override
     public boolean createCollection(CollectionEntity collectionEntity) {
         mCollectionRepository.save(collectionEntity);
@@ -24,17 +36,25 @@ public class CollectionServiceImpl implements CollectionService{
 
     @Override
     public void deleteCollection(Long id) {
-        if (doesCollectionExist(id)) {
-            mCollectionRepository.deleteById(id);
+        if (mCollectionRepository.existsById(id)) {
+            List<Long> itemsId = mItemRepository.getItemsIdByCollectionId(id);
+            assert false;
+            for (Long itemId : itemsId) {
+                mItemRepository.deleteAllItemsLikes(itemId);
+                mCommentRepository.deleteAllCommentsByItemId(itemId);
+                mItemRepository.deleteItemPropertiesByItemId(itemId);
+                mItemRepository.deleteById(itemId);
+            }
+            mCollectionRepository.deleteAllCollectionLikes(id);
             mCollectionRepository.deletePropertiesById(id);
+            mCollectionRepository.deleteById(id);
         }
         else throw new CollectionNotFoundException(id);
     }
 
     @Override
     public CollectionEntity getCollection(Long id) {
-        if (doesCollectionExist(id)) return mCollectionRepository.findById(id).get();
-        else throw new CollectionNotFoundException(id);
+        return mCollectionRepository.findById(id).orElseThrow(() -> new CollectionNotFoundException(id));
     }
 
     @Override
@@ -52,48 +72,37 @@ public class CollectionServiceImpl implements CollectionService{
     }
 
     @Override
-    public boolean createNewTopic(String name) {
-        if (!doesTopicExist(name)) {
-            mCollectionRepository.saveNewTopic(name);
+    public boolean createNewTopic(TopicEntity topic) {
+        if (mTopicRepository.findTopicByName(topic.getTopic()).isEmpty()) {
+            mTopicRepository.save(topic);
             return true;
         }
-        else throw new TopicAlreadyExistsException(name);
+        else throw new TopicAlreadyExistsException(topic.getTopic());
     }
 
     @Override
-    public String getTopicByTopicId(Long id) {
-        if (doesTopicExist(id)) {
-            return mCollectionRepository.findTopicById(id).get();
+    public TopicEntity getTopicByTopicId(Long id) {
+        return mTopicRepository.findById(id).orElseThrow(() -> new TopicNotFoundException(id));
+    }
+
+    @Override
+    public List<TopicEntity> getAllTopics() {
+        return mTopicRepository.getAllTopics();
+    }
+
+    @Override
+    public void updateLikes(Long collectionId, Long userId) {
+        int count = mCollectionRepository.getLikesByCollectionAndUserId(collectionId, userId);
+        if (count == 0) {
+            mCollectionRepository.addNewLike(collectionId, userId);
         }
-        throw new TopicNotFoundException(id);
-    }
-
-    @Override
-    public List<String> getAllTopics() {
-        return mCollectionRepository.getAllTopic();
-    }
-
-    @Override
-    public void updateLikes(Long id, int amount) {
-        if (doesCollectionExist(id)) mCollectionRepository.updateLikes(id);
-        else throw new CollectionNotFoundException(id);
+        else {
+            mCollectionRepository.deleteLike(collectionId, userId);
+        }
     }
 
     @Override
     public int getLikes(Long id) {
-        CollectionEntity collectionEntity = mCollectionRepository.findById(id).orElseThrow(() -> new CollectionNotFoundException(id));
-        return collectionEntity.getLikes();
-    }
-
-    public boolean doesCollectionExist(Long id) {
-        return mCollectionRepository.existsById(id);
-    }
-
-    public boolean doesTopicExist(String name) {
-        return mCollectionRepository.findTopicByName(name).isPresent();
-    }
-
-    public boolean doesTopicExist(Long id) {
-        return mCollectionRepository.findTopicById(id).isPresent();
+        return mCollectionRepository.getLikes(id);
     }
 }

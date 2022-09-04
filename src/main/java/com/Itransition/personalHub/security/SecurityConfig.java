@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 @Configuration
@@ -31,6 +32,8 @@ public class SecurityConfig {
                 .authorizeRequests().antMatchers(POST,"/user/login").permitAll()
                 .and()
                 .authorizeRequests().antMatchers(POST,"/user/save").permitAll()
+                .and()
+                .authorizeRequests().antMatchers(GET, "/**").permitAll()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()

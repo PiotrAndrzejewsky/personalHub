@@ -16,10 +16,6 @@ public class CollectionEntity {
 
     @Column(name = "name")
     private String mName;
-
-    @Column(name = "likes")
-    private int mLikes = 0;
-
     @Column(name = "description")
     private String mDescription;
 
@@ -61,14 +57,6 @@ public class CollectionEntity {
 
     public void setName(String name) {
         mName = name;
-    }
-
-    public int getLikes() {
-        return mLikes;
-    }
-
-    public void setLikes(int likes) {
-        mLikes = likes;
     }
 
     public String getDescription() {

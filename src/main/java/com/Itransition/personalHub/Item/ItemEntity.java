@@ -18,14 +18,14 @@ public class ItemEntity {
     @Column(name = "name")
     private String mName;
 
-    @Column(name = "likes")
-    private Long mLikes;
-
     @Column(name = "creation_time")
     private LocalDateTime mCreationTime;
 
     @Column(name = "image")
     private String mImage;
+
+    public ItemEntity() {
+    }
 
     public ItemEntity(Long collectionId, String name) {
         mCollectionId = collectionId;
@@ -54,14 +54,6 @@ public class ItemEntity {
 
     public void setName(String name) {
         mName = name;
-    }
-
-    public Long getLikes() {
-        return mLikes;
-    }
-
-    public void setLikes(Long likes) {
-        mLikes = likes;
     }
 
     public LocalDateTime getCreationTime() {

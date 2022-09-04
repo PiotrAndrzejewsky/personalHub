@@ -20,23 +20,23 @@ public class CollectionController {
     }
 
     @GetMapping("/collection/topic/{id}")
-    public String getTopicByTopicId(@PathVariable Long id) {
+    public TopicEntity getTopicByTopicId(@PathVariable Long id) {
         return mCollectionService.getTopicByTopicId(id);
     }
 
     @GetMapping("/collection/topic/all")
-    public List<String> getAllTopics() {
+    public List<TopicEntity> getAllTopics() {
         return mCollectionService.getAllTopics();
-    }
-
-    @GetMapping("/collection/likes/{id}")
-    public int getLikesById(@PathVariable Long id) {
-        return mCollectionService.getLikes(id);
     }
 
     @GetMapping("/collections/{userId}")
     public List<CollectionEntity> getAllCollectionsById(@PathVariable Long userId) {
         return mCollectionService.getAllCollectionsById(userId);
+    }
+
+    @GetMapping("/collections/likes/{collectionId}")
+    public int getCollectionLikes(@PathVariable Long collectionId) {
+        return mCollectionService.getLikes(collectionId);
     }
 
     @PostMapping("/collection")
@@ -46,18 +46,18 @@ public class CollectionController {
     }
 
     @PostMapping("/collection/topic")
-    public ResponseEntity<Boolean> createNewTopic(@RequestBody String topic) {
+    public ResponseEntity<Boolean> createNewTopic(@RequestBody TopicEntity topic) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/topic").toUriString());
         return ResponseEntity.created(uri).body(mCollectionService.createNewTopic(topic));
     }
 
-    @PostMapping("/collection/likes/update/{id}")
-    public void updateLikes(@RequestBody int amount, @PathVariable Long id) {
-        mCollectionService.updateLikes(id, amount);
+    @PostMapping("/collection/likes/update/{userId}/{collectionId}")
+    public void updateLikes(@PathVariable Long userId, @PathVariable Long collectionId) {
+        mCollectionService.updateLikes(collectionId, userId);
     }
 
     @PutMapping("/collection/update/{id}")
-    public void updateUser(@RequestBody CollectionEntity collectionEntity, @PathVariable Long id) {
+    public void updateCollection(@RequestBody CollectionEntity collectionEntity, @PathVariable Long id) {
         mCollectionService.updateCollection(collectionEntity, id);
     }
 

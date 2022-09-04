@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Transactional
@@ -20,8 +21,12 @@ public class ItemServiceImpl implements ItemService{
     @Autowired
     private CollectionRepository mCollectionRepository;
 
+    @Autowired
+    private CommentRepository mCommentRepository;
+
     @Override
     public void createItem(ItemEntity itemEntity) {
+        itemEntity.setCreationTime(LocalDateTime.now());
         mItemRepository.save(itemEntity);
     }
 
@@ -44,14 +49,6 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public void updateItemLikes(Long itemId, int amount) {
-        if (mItemRepository.existsById(itemId)) {
-            mItemRepository.updateLikes(itemId, amount);
-        }
-        else throw new ItemNotFoundException(itemId);
-    }
-
-    @Override
     public List<ItemEntity> getAllItemsByCollectionId(Long collectionId) {
         if (mCollectionRepository.existsById(collectionId)) {
             return mItemRepository.getAllItemsByCollectionId(collectionId);
@@ -65,28 +62,44 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public List<String> getCommentsByItemId(Long itemId) {
-        return mItemRepository.getAllCommentsByItemId(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
+    public List<CommentEntity> getCommentsByItemId(Long itemId) {
+        return mCommentRepository.getAllCommentsByItemId(itemId).orElseThrow(() -> new ItemNotFoundException(itemId));
     }
 
     @Override
-    public String getCommentById(Long commentId) {
-        return mItemRepository.getCommentByCommentId(commentId).orElseThrow(() -> new CommentNotFoundException(commentId));
+    public CommentEntity getCommentById(Long commentId) {
+        return mCommentRepository.getCommentByCommentId(commentId).orElseThrow(() -> new CommentNotFoundException(commentId));
     }
 
     @Override
     public void addComment(String comment, Long itemId) {
         if (mItemRepository.existsById(itemId)) {
-            mItemRepository.saveComment(itemId, comment);
+            mCommentRepository.saveComment(itemId, comment);
         }
         else throw new ItemNotFoundException(itemId);
     }
 
     @Override
     public void deleteComment(Long commentId) {
-        if (mItemRepository.getCommentByCommentId(commentId).isPresent()) {
-            mItemRepository.deleteCommentById(commentId);
+        if (mCommentRepository.getCommentByCommentId(commentId).isPresent()) {
+            mCommentRepository.deleteCommentById(commentId);
         }
         else throw new CommentNotFoundException(commentId);
+    }
+
+    @Override
+    public void updateLikes(Long itemId, Long userId) {
+        int count = mItemRepository.getLikesByItemAndUserId(itemId, userId);
+        if (count == 0) {
+            mItemRepository.addNewLike(itemId, userId);
+        }
+        else {
+            mItemRepository.deleteLike(itemId, userId);
+        }
+    }
+
+    @Override
+    public int getLikes(Long itemId) {
+        return mItemRepository.getLikes(itemId);
     }
 }
