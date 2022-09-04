@@ -24,9 +24,14 @@ public class ItemController {
         mItemService.deleteItem(itemId);
     }
 
-    @PostMapping("/item/likes/update/{itemId}")
-    public void updateItemLikes(@RequestBody int amount, @PathVariable Long itemId) {
-        mItemService.updateItemLikes(itemId, amount);
+    @GetMapping("/item/likes/{itemId}")
+    public int getItemLikes(@PathVariable Long itemId) {
+        return mItemService.getLikes(itemId);
+    }
+
+    @PostMapping("/item/likes/update/{itemId}/{userId}")
+    public void updateItemLikes(@PathVariable Long userId, @PathVariable Long itemId) {
+        mItemService.updateLikes(itemId, userId);
     }
 
     @GetMapping("item/all/{collectionId}")
@@ -34,24 +39,24 @@ public class ItemController {
         return mItemService.getAllItemsByCollectionId(collectionId);
     }
 
-    @GetMapping("/item/{itemId}")
     public ItemEntity getItem(@PathVariable Long itemId) {
         return mItemService.getItem(itemId);
     }
 
     @GetMapping("/item/comments/{itemId}")
-    public List<String> getCommentsByItemId(@PathVariable Long itemId) {
+    public List<CommentEntity> getCommentsByItemId(@PathVariable Long itemId) {
         return mItemService.getCommentsByItemId(itemId);
     }
 
     @GetMapping("/comment/{commentId}")
-    public String getComment(@PathVariable Long commentId) {
+    public CommentEntity getComment(@PathVariable Long commentId) {
+        System.out.println(commentId);
         return mItemService.getCommentById(commentId);
     }
 
     @PostMapping("/item/comment/save/{itemId}")
-    public void addComment(@RequestBody String comment, @PathVariable Long itemId) {
-        mItemService.addComment(comment, itemId);
+    public void addComment(@RequestBody CommentEntity comment, @PathVariable Long itemId) {
+        mItemService.addComment(comment.getComment(), itemId);
     }
 
     @DeleteMapping("/comment/delete/{commentId}")

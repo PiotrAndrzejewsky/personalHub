@@ -16,31 +16,38 @@ public interface ItemRepository extends CrudRepository<ItemEntity, Long> {
     void updateLikes(Long id, int amount);
 
     @Modifying
-    @Query(value = "DELETE FROM item_properties WHERE item_id = : id", nativeQuery = true)
+    @Query(value = "DELETE FROM item_properties WHERE item_id = :id", nativeQuery = true)
     void deleteItemPropertiesByItemId(Long id);
 
     @Modifying
-    @Query(value = "DELETE FROM tags WHERE item_id = : id", nativeQuery = true)
+    @Query(value = "DELETE FROM tags WHERE item_id = :id", nativeQuery = true)
     void deleteTagsByItemId(Long id);
 
     @Modifying
-    @Query(value = "DELETE FROM comments WHERE item_id = : id", nativeQuery = true)
+    @Query(value = "DELETE FROM comments WHERE item_id = :id", nativeQuery = true)
     void deleteCommentsByItemId(Long id);
 
     @Query(value = "SELECT * FROM items WHERE collection_id = :id", nativeQuery = true)
     List<ItemEntity> getAllItemsByCollectionId(Long id);
 
-    @Query(value = "SELECT comment FROM comments WHERE item_id = :id", nativeQuery = true)
-    Optional<List<String>> getAllCommentsByItemId(Long id);
+    @Query(value = "SELECT COUNT(id) FROM item_likes WHERE item_id = :id", nativeQuery = true)
+    int getLikes(Long id);
 
-    @Query(value = "SELECT comment FROM comments WHERE id = :id", nativeQuery = true)
-    Optional<String> getCommentByCommentId(Long id);
-
-    @Modifying
-    @Query(value = "INSERT INTO comments (item_id, comment) VALUES (:item_id, :comment)", nativeQuery = true)
-    void saveComment(Long item_id, String comment);
+    @Query(value = "SELECT COUNT(id) FROM item_likes WHERE item_id = :itemId AND user_id = :userId", nativeQuery = true)
+    int getLikesByItemAndUserId(Long itemId, Long userId);
 
     @Modifying
-    @Query(value = "DELETE FROM comments WHERE id = : id", nativeQuery = true)
-    void deleteCommentById(Long id);
+    @Query(value = "INSERT INTO item_likes (item_id, user_id) VALUES (:itemId, :userId)", nativeQuery = true)
+    void addNewLike(Long itemId, Long userId);
+
+    @Modifying
+    @Query(value = "DELETE FROM item_likes WHERE item_id = :itemId AND user_id = :userId", nativeQuery = true)
+    void deleteLike(Long itemId, Long userId);
+
+    @Query(value = "SELECT id FROM items WHERE collection_id =:collectionId", nativeQuery = true)
+    List<Long> getItemsIdByCollectionId(Long collectionId);
+
+    @Modifying
+    @Query(value = "DELETE FROM item_likes WHERE item_id = :itemId", nativeQuery = true)
+    void deleteAllItemsLikes(Long itemId);
 }

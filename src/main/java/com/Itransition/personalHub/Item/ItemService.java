@@ -7,14 +7,12 @@ public interface ItemService {
     void createItem(ItemEntity itemEntity);
     void updateItem(ItemEntity itemEntity, Long itemId);
     void deleteItem(Long itemId);
-    void updateItemLikes(Long itemId, int amount);
     List<ItemEntity> getAllItemsByCollectionId(Long collectionId);
     ItemEntity getItem(Long itemId);
-    List<String> getCommentsByItemId(Long itemId);
-    String getCommentById(Long commentId);
+    List<CommentEntity> getCommentsByItemId(Long itemId);
+    CommentEntity getCommentById(Long commentId);
     void addComment(String comment, Long itemId);
     void deleteComment(Long commentId);
-
-
-
+    void updateLikes(Long itemId, Long userId);
+    int getLikes(Long itemId);
 }
